@@ -1,5 +1,12 @@
 <template>
 	<v-container>
+		<v-select
+			v-model="launchFilter.selectedYear.value"
+			:items="launchFilter.yearOptions.value"
+			label="Filter by Year"
+			clearable
+			density="comfortable"
+		></v-select>
 		<v-table>
 			<thead>
 				<tr>
@@ -11,7 +18,7 @@
 				</tr>
 			</thead>
 			<tbody>
-				<tr v-for="launch in launches" :key="launch.mission_name">
+				<tr v-for="launch in launchFilter.filteredLaunches.value" :key="launch.mission_name">
 					<td>{{ launch.mission_name || '-' }}</td>
 					<td>
 						{{
@@ -33,6 +40,8 @@
 	</v-container>
 </template>
 <script lang="ts" setup>
+import { useLaunchFilter } from '~/composables/useLaunchFilter'
+
 const query = gql`
 	query getLaunches {
 		launches {
@@ -63,4 +72,5 @@ const { data } = useAsyncQuery<{
 }>(query)
 
 const launches = computed(() => data.value?.launches ?? [])
+const launchFilter = useLaunchFilter(launches)
 </script>
