@@ -1,9 +1,20 @@
 <template>
 	<v-container>
 		<v-select
-			v-model="launchFilter.selectedYear.value"
-			:items="launchFilter.yearOptions.value"
+			v-model="filterLaunch.selectedYear.value"
+			:items="filterLaunch.yearOptions.value"
 			label="Filter by Year"
+			clearable
+			density="comfortable"
+		></v-select>
+		<v-select
+			v-model="sortLaunch.sortOrder.value"
+			:items="[
+				{ title: 'Newest First', value: 'desc' },
+				{ title: 'Oldest First', value: 'asc' },
+				{ title: 'No Sort', value: null },
+			]"
+			label="Sort by Launch Date"
 			clearable
 			density="comfortable"
 		></v-select>
@@ -11,14 +22,22 @@
 			<thead>
 				<tr>
 					<th>Mission Name</th>
-					<th>Launch Date</th>
+					<th>
+						Launch Date
+						<v-btn
+							icon="mdi-sort"
+							size="x-small"
+							variant="text"
+							@click="sortLaunch.toggleSort()"
+						></v-btn>
+					</th>
 					<th>Launch Site Name</th>
 					<th>Rocket Name</th>
 					<th>Details</th>
 				</tr>
 			</thead>
 			<tbody>
-				<tr v-for="launch in launchFilter.filteredLaunches.value" :key="launch.mission_name">
+				<tr v-for="launch in sortLaunch.sortedLaunches.value" :key="launch.mission_name">
 					<td>{{ launch.mission_name || '-' }}</td>
 					<td>
 						{{
@@ -40,7 +59,8 @@
 	</v-container>
 </template>
 <script lang="ts" setup>
-import { useLaunchFilter } from '~/composables/useLaunchFilter'
+import { useLaunchFilter } from '~/composables/useFilterLaunch'
+import { useSortLaunch } from '~/composables/useSortLaunch'
 
 const query = gql`
 	query getLaunches {
@@ -72,5 +92,6 @@ const { data } = useAsyncQuery<{
 }>(query)
 
 const launches = computed(() => data.value?.launches ?? [])
-const launchFilter = useLaunchFilter(launches)
+const filterLaunch = useLaunchFilter(launches)
+const sortLaunch = useSortLaunch(filterLaunch.filteredLaunches)
 </script>

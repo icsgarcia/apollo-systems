@@ -1,16 +1,5 @@
+import type { Launch } from '~/types/launch'
 import { computed, type ComputedRef, ref } from 'vue'
-
-interface Launch {
-	mission_name: string
-	launch_date_local: Date
-	launch_site: {
-		site_name: string
-	}
-	rocket: {
-		rocket_name: string
-	}
-	details: string
-}
 
 export const useLaunchFilter = (launches: ComputedRef<Launch[]>) => {
 	const selectedYear = ref<number | null>(null)
