@@ -5,7 +5,10 @@ export interface Launch {
 		site_name: string
 	}
 	rocket: {
-		rocket_name: string
+		rocket: {
+			id: string
+			name: string
+		}
 	}
 	details: string
 }

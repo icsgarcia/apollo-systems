@@ -51,7 +51,11 @@
 						}}
 					</td>
 					<td>{{ launch.launch_site?.site_name || '-' }}</td>
-					<td>{{ launch.rocket?.rocket_name || '-' }}</td>
+					<td>
+						<NuxtLink :to="`/rockets/${launch.rocket.rocket.id}`">
+							{{ launch.rocket?.rocket?.name || '-' }}
+						</NuxtLink>
+					</td>
 					<td>{{ launch.details || '-' }}</td>
 				</tr>
 			</tbody>
@@ -71,7 +75,10 @@ const query = gql`
 				site_name
 			}
 			rocket {
-				rocket_name
+				rocket {
+					id
+					name
+				}
 			}
 			details
 		}
@@ -85,7 +92,10 @@ const { data } = useAsyncQuery<{
 			site_name: string
 		}
 		rocket: {
-			rocket_name: string
+			rocket: {
+				id: string
+				name: string
+			}
 		}
 		details: string
 	}[]
